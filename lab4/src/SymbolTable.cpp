@@ -70,6 +70,14 @@ SymbolTable::SymbolTable(SymbolTable *prev)
 SymbolEntry* SymbolTable::lookup(std::string name)
 {
     // Todo
+    SymbolTable *current = identifiers;
+    while (current != nullptr)
+        // symbolTable为map类型的成员变量
+        if (current->symbolTable.find(name) != current->symbolTable.end())
+            return current->symbolTable[name];
+        else
+            //向下一个SymbolTable去找
+            current = current->prev;
     return nullptr;
 }
 
