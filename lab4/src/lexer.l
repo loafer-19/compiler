@@ -26,6 +26,12 @@ ID [[:alpha:]_][[:alpha:][:digit:]_]*
 EOL (\r\n|\n|\r)
 WHITE [\t ]
 /*  Your code here (lab3). */
+%x COMMENT
+blockcommentbegin "/*"
+blockcommentelement1 .
+blockcommentelement2 \n
+blockcommentend "*/"
+SINGLE_LINE_COMMENT "//"[^\n]*
 
 %%
     /* rules section */
@@ -118,3 +124,11 @@ WHITE [\t ]
     /*  Your code here (lab3). */
 %%
 /* user code section */
+{SINGLE_LINE_COMMENT} {
+    /* Ignore it */
+}
+
+{blockcommentbegin} {BEGIN COMMENT;}//通过定义好的宏BEGIN切换状态，初始状态默认为INITIAL，因此在结束该状态时需要切换回初始状态。
+<COMMENT>{blockcommentelement1} {}
+<COMMENT>{blockcommentelement2} {yylineno++;}
+<COMMENT>{blockcommentend} {BEGIN INITIAL;}
